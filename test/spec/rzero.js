@@ -1,16 +1,24 @@
 var _ = require('lodash');
 var expect = require('expect.js');
 
-var pzero = require('../../index');
+var rzero = require('../../lib/rzero');
 
-describe('ctor', function() {
+describe('rzero', function() {
 
-    _.forOwn( require('../mock/ctor'), function(res, url) {
+    beforeEach(function() {
+        this.request = rzero('');
+    });
 
-        it('should parse "' + url + '"', function() {
-            expect( pzero(url) ).to.eql(res);
+    describe('_parse', function() {
+        _.forOwn( require('../mock/_parse'), function(res, url) {
+
+            it('should parse "' + url + '"', function() {
+                this.request._parse(url);
+
+                expect( this.request._params ).to.eql(res);
+            });
+
         });
-
     });
 
 });

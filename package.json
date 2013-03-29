@@ -20,6 +20,7 @@
     "dependencies": {
         "pzero": "*"
     },
+    "main": "./lib/rzero.js",
     "devDependencies": {
         "mocha": "*",
         "expect.js": "*",

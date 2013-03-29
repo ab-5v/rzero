@@ -1,0 +1,29 @@
+{
+    "name": "rzero",
+    "version": "0.0.1",
+    "description": "Simple http request helper",
+    "keywords": [ "http", "request" ],
+    "author": {
+        "name": "Artur Burtsev",
+        "email": "artjock@gmail.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/artjock/rzero.git"
+    },
+    "engines": {
+        "node": ">= 0.8.0"
+    },
+    "scripts": {
+        "test": "./node_modules/.bin/mocha test/spec"
+    },
+    "dependencies": {
+        "pzero": "*"
+    },
+    "devDependencies": {
+        "mocha": "*",
+        "expect.js": "*",
+        "lodash": "*"
+    },
+    "private": true
+}

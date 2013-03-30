@@ -151,7 +151,7 @@ describe('rzero', function() {
                 this.r0._text = '{"a": 1, "b": 2}';
                 this.r0._done();
 
-                expect( this.r0._data ).to.eql({a: 1, b: 2});
+                expect( this.cb.getCall(0).args[1].data ).to.eql({a: 1, b: 2});
             });
 
             it('should run callback if parse error exists', function() {
@@ -176,6 +176,17 @@ describe('rzero', function() {
                     data: undefined,
                     text: '123'
                 });
+            });
+
+            it('should run onjson when exists', function() {
+                this.r0._callback = this.cb;
+                this.r0._typeRes = rzero.JSON;
+                this.r0._onjson = function(json) { return json.a };
+                this.r0._text = '{"a": 11}';
+                this.r0._done();
+
+                expect( this.cb.getCall(0).args[1].data ).to.eql(11);
+
             });
 
         });

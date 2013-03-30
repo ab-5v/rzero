@@ -79,32 +79,28 @@ describe('rzero', function() {
 
             it('should not modify body string', function() {
                 this.r0._data = '123';
-                this.r0._body();
 
-                expect( this.r0._data ).to.eql('123');
+                expect( this.r0._body() ).to.eql('123');
             });
 
             it('should stringify via JSON on json body type', function() {
                 this.r0._typeReq = this.r0._TYPES.JSON;
                 this.r0._data = {a: 1, b: 2};
-                this.r0._body();
 
-                expect( this.r0._data ).to.eql('{"a":1,"b":2}');
+                expect( this.r0._body() ).to.eql('{"a":1,"b":2}');
             });
 
             it('should stringify via qs on urlencoded body type', function() {
                 this.r0._typeReq = this.r0._TYPES.URLENCODED;
                 this.r0._data = {a: 1, b: 2};
-                this.r0._body();
 
-                expect( this.r0._data ).to.eql('a=1&b=2');
+                expect( this.r0._body() ).to.eql('a=1&b=2');
             });
 
             it('should stringify via qs by default', function() {
                 this.r0._data = {a: 1, b: 2};
-                this.r0._body();
 
-                expect( this.r0._data ).to.eql('a=1&b=2');
+                expect( this.r0._body() ).to.eql('a=1&b=2');
             });
 
         });

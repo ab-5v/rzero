@@ -5,10 +5,10 @@ var defaults = {
     host: 'yandex.ru',
     path: '/',
     port: 80,
-    query: {}
+    headers: {}
 };
 
-var def = function(obj) { return _.defaults(obj || {}, defaults); };
+var def = function(obj) { return _.extend({}, defaults, {query: {}}, obj); };
 
 module.exports = {
     'yandex.ru':    def(),
@@ -39,7 +39,7 @@ module.exports = {
     'yandex.ru/?a=1&b=2':               def({query: {a: '1', b: '2'}}),
     'http://yandex.ru?a=1&b=2':         def({query: {a: '1', b: '2'}}),
     'https://yandex.ru?a=1&b=2':        def({query: {a: '1', b: '2'}, port: 443}),
-    'posts://yandex.ru:8080?a=1&b=2':  def({query: {a: '1', b: '2'}, port: 8080, method: 'post'}),
+    'posts://yandex.ru:8080?a=1&b=2':   def({query: {a: '1', b: '2'}, port: 8080, method: 'post'}),
 
     'yandex.ru/api':                                def({path: '/api'}),
     'yandex.ru/api/index.html':                     def({path: '/api/index.html'}),

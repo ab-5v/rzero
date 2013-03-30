@@ -8,6 +8,7 @@ describe('rzero', function() {
 
     beforeEach(function() {
         this.r0 = rzero('artjock.ru');
+        this.cb = sinon.spy();
     });
 
     describe('private', function() {
@@ -132,37 +133,40 @@ describe('rzero', function() {
         describe('_done', function() {
 
             beforeEach(function() {
-                this.cb = sinon.spy();
                 this.r0._req = 1;
                 this.r0._res = { statusCode: 200 };
             });
 
             it('should run callback if error exists', function() {
+                this.r0._callback = this.cb;
                 var err = this.r0._error = new Error('test');
-                this.r0._done(this.cb);
+                this.r0._done();
 
                 expect( this.cb.calledWith(err) ).to.be.ok();
             });
 
             it('should parse data if _typeRes exists', function() {
+                this.r0._callback = this.cb;
                 this.r0._typeRes = rzero.JSON;
                 this.r0._text = '{"a": 1, "b": 2}';
-                this.r0._done(this.cb);
+                this.r0._done();
 
                 expect( this.r0._data ).to.eql({a: 1, b: 2});
             });
 
             it('should run callback if parse error exists', function() {
+                this.r0._callback = this.cb;
                 this.r0._typeRes = rzero.JSON;
                 this.r0._text = '{foo}';
-                this.r0._done(this.cb);
+                this.r0._done();
 
                 expect( this.cb.getCall(0).args[0] ).to.be.an(Error);
             });
 
             it('should run callback with data', function() {
+                this.r0._callback = this.cb;
                 this.r0._text = '123';
-                this.r0._done(this.cb);
+                this.r0._done();
 
                 expect( this.cb.getCall(0).args[0] ).to.be(null);
                 expect( this.cb.getCall(0).args[1] ).to.eql({
@@ -182,62 +186,177 @@ describe('rzero', function() {
 
         describe('body', function() {
 
-            it('should write body', function() {});
+            it('should write body', function() {
+                this.r0.body({a: 1});
 
-            it('should overwrite body', function() {});
+                expect( this.r0._data ).to.eql({a: 1});
+            });
+
+            it('should overwrite body', function() {
+                this.r0._data = {a: 1};
+                this.r0.body( {b: 2} );
+
+                expect( this.r0._data ).to.eql({b: 2});
+            });
+
+            it('should return this', function() {
+                expect( this.r0.body() ).to.eql(this.r0);
+            });
 
         });
 
         describe('type', function() {
 
-            it('should write _typeRes', function() {});
+            it('should write _typeRes', function() {
+                this.r0.type(rzero.JSON);
 
-            it('should write _typeReq', function() {});
+                expect( this.r0._typeReq ).to.be( undefined );
+                expect( this.r0._typeRes ).to.eql( rzero.JSON );
+            });
 
-            it('should write _typeRes and _typeReq', function() {});
+            it('should write _typeReq', function() {
+                this.r0.type(null, rzero.JSON);
+
+                expect( this.r0._typeReq ).to.eql( rzero.JSON );
+                expect( this.r0._typeRes ).to.be( undefined );
+            });
+
+            it('should write _typeRes and _typeReq', function() {
+                this.r0.type(rzero.URLENCODED, rzero.JSON);
+
+                expect( this.r0._typeReq ).to.eql( rzero.JSON );
+                expect( this.r0._typeRes ).to.eql( rzero.URLENCODED );
+            });
+
+            it('should return this', function() {
+                expect( this.r0.type() ).to.eql(this.r0);
+            });
+
 
         });
 
         describe('prms', function() {
 
-            it('should write (name, value)', function() {});
+            it('should write (name, value)', function() {
+                this.r0.prms('a', 'b');
 
-            it('should write (params)', function() {});
+                expect( this.r0._query ).to.eql( {a: 'b'} );
+            });
 
-            it('should extend params', function() {});
+            it('should write (params)', function() {
+                this.r0.prms({a: 'b', c: 'd'});
+
+                expect( this.r0._query ).to.eql( {a: 'b', c: 'd'} );
+            });
+
+            it('should extend params', function() {
+                this.r0._query = {a: 'b', c: 'd'};
+                this.r0.prms({c: 'e', f: 'g'});
+
+                expect( this.r0._query ).to.eql( {a: 'b', c: 'e', f: 'g'} );
+            });
+
+            it('should return this', function() {
+                expect( this.r0.prms() ).to.eql(this.r0);
+            });
+
 
         });
 
         describe('head', function() {
 
-            it('should write (name, value)', function() {});
+            it('should write (name, value)', function() {
+                this.r0.head('aa', 'bb');
 
-            it('should write (headers)', function() {});
+                expect( this.r0._opts.headers ).to.eql({aa: 'bb'});
+            });
 
-            it('should extend headers', function() {});
+            it('should write (headers)', function() {
+                this.r0.head({a: 'b', c: 'd'});
 
-            it('should call _head', function() {});
+                expect( this.r0._opts.headers ).to.eql( {a: 'b', c: 'd'} );
+            });
+
+            it('should extend headers', function() {
+                this.r0._opts.headers = {a: 'b', c: 'd'};
+                this.r0.headers({c: 'e', f: 'g'});
+
+                expect( this.r0._opts.headers ).to.eql( {a: 'b', c: 'e', f: 'g'} );
+            });
+
+            it('should lowercase headers', function() {
+                this.r0.head('qWeRtY', 'aSdFgH');
+
+                expect( this.r0._opts.headers ).to.eql( {'qwerty': 'asdfgh'} );
+            });
+
+            it('should call _head on each header', function() {
+                sinon.spy(this.r0, '_head');
+                this.r0.head({a: 'b', c: 'd'});
+
+                expect(this.r0._head.getCall(0).args).to.eql(['a', 'b']);
+                expect(this.r0._head.getCall(1).args).to.eql(['c', 'd']);
+            });
+
+            it('should return this', function() {
+                expect( this.r0.head() ).to.eql(this.r0);
+            });
 
         });
 
         describe('bind', function() {
 
             it('should add callback', function() {
+                this.r0.bind('text', this.cb);
+
+                expect( this.r0._ontext ).to.eql(this.cb);
+            });
+
+            it('should return this', function() {
+                expect( this.r0.bind() ).to.eql(this.r0);
             });
 
         });
 
         describe('done', function() {
 
-            it('should save callback', function() {});
+            beforeEach(function() {
+                sinon.spy(this.r0, '_body');
+                sinon.spy(this.r0, '_options');
+            });
 
-            it('should return on error', function() {});
+            it('should save callback', function() {
+                this.r0.done(this.cb);
 
-            it('should call _body', function() {});
+                expect(this.r0._callback).to.eql(this.cb);
+            });
 
-            it('should call _options', function() {});
+            it('should return on error', function() {
+                this.r0._error = new Error();
+                this.r0.done(this.cb);
 
-            it('should call _body before _options', function() {});
+                expect(this.cb.calledWith(this.r0._error)).to.be.ok();
+                expect(this.r0._body.called).not.to.be.ok();
+
+            });
+
+            it('should call _body', function() {
+                this.r0.done();
+
+                expect(this.r0._body.calledOnce).to.be.ok();
+            });
+
+            it('should call _options', function() {
+                this.r0.done();
+
+                expect(this.r0._options.calledOnce).to.be.ok();
+            });
+
+            it('should call _body before _options', function() {
+                this.r0.done();
+
+                expect(this.r0._body.calledBefore(this.r0._options)).to.be.ok();
+            });
 
         });
 

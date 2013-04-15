@@ -123,6 +123,12 @@ describe('rzero', function() {
                 expect( this.r0._options().headers['content-length'] ).to.eql(3);
             });
 
+            it('should add correct content-length for utf strings', function() {
+                this.r0._data = 'fffффф';
+
+                expect( this.r0._options().headers['content-length'] ).to.eql(9);
+            });
+
             it('should not add content-lenght when no body exists', function() {
                 expect( this.r0._options().headers['content-length'] ).to.be(undefined);
             });

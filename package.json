@@ -26,6 +26,5 @@
         "expect.js": "*",
         "sinon": "*",
         "lodash": "*"
-    },
-    "private": true
+    }
 }

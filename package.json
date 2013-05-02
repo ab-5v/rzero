@@ -1,6 +1,6 @@
 {
     "name": "rzero",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Simple http request helper",
     "keywords": [ "http", "request" ],
     "author": {

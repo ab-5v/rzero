@@ -3,7 +3,7 @@
 rzero
 =====
 
-Simple request client.
+Simple node request client.
 
 ## API
 

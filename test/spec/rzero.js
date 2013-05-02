@@ -307,10 +307,16 @@ describe('rzero', function() {
                 expect( this.r0._opts.headers ).to.eql( {a: 'b', c: 'e', f: 'g'} );
             });
 
-            it('should lowercase headers', function() {
-                this.r0.head('qWeRtY', 'aSdFgH');
+            it('should lowercase header\'s name', function() {
+                this.r0.head('qWeRtY', 'ololo');
 
-                expect( this.r0._opts.headers ).to.eql( {'qwerty': 'asdfgh'} );
+                expect( this.r0._opts.headers ).to.eql( {'qwerty': 'ololo'} );
+            });
+
+            it('should not lowercase header\'s value', function() {
+                this.r0.head('lololo', 'qWeRtY');
+
+                expect( this.r0._opts.headers ).to.eql( {'lololo': 'qWeRtY'} );
             });
 
             it('should call _head on each header', function() {

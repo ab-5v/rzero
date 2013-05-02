@@ -9,7 +9,7 @@ Simple node request client.
 
 ```javascript
 rzero( handler.url )
-  .head( 'Content-Type: application/json' )
+  .head( 'Content-Type', 'application/json' )
   .head( {'X-Api-Version': '2.1.0', 'X-Req-Id': 'asd'} )
   .prms( 'login', 'artjock' )
   .prms( {name: 'Artur', gender: 'male'} )

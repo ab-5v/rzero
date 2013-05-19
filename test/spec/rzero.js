@@ -177,6 +177,7 @@ describe('rzero', function() {
 
             it('should run callback with data', function() {
                 this.r0._callback = this.cb;
+                this.r0._query = {a: 1};
                 this.r0._text = '123';
                 this.r0._done();
 
@@ -185,6 +186,7 @@ describe('rzero', function() {
                     req: 1,
                     res: {statusCode: 200},
                     status: 200,
+                    params: {a: 1},
                     data: undefined,
                     text: '123'
                 });
@@ -193,7 +195,7 @@ describe('rzero', function() {
             it('should run onjson when exists', function() {
                 this.r0._callback = this.cb;
                 this.r0._typeRes = rzero.JSON;
-                this.r0._onjson = function(json) { return json.a };
+                this.r0._onjson = function(json) { return json.a; };
                 this.r0._text = '{"a": 11}';
                 this.r0._done();
 

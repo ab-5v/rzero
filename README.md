@@ -17,12 +17,14 @@ rzero( handler.url )
   .type( 'response type', 'request- type' )
   .bind( 'text', function(text) { return text.replace(/'/g, '"'); } )
   .bind( 'json', function(json) { return json.users[0].name; } )
+  .time( 100 )
   .done(function(err, result) {
     err;
     result.req;
     result.res;
     result.text;
     result.data;
+    result.params;
     result.status;
   });
 ```
